@@ -220,10 +220,15 @@ def testPich(checkpoint_path, dataloader, model, device, output_dir, args):
 def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='LDC trainer.')
-    parser.add_argument('--choose_test_data',
+    parser.add_argument('--testDatasetID',
                         type=int,
-                        default=-1, # uded 14
-                        help='Choose a dataset for testing: 0 - 8')
+                        default=-1, 
+                        help='Choose a dataset for testing')
+    
+    parser.add_argument('--trainDatasetID',
+                        type=int,
+                        default=-1, 
+                        help='Choose a dataset for training')
     # ----------- test -------0--
 
     parser.add_argument('--resume',
@@ -241,14 +246,15 @@ def parse_args():
                         default='16/16_model.pth',# 37 for biped 60 MDBD
                         help='Checkpoint path.')
     
-    TEST_DATA = DATASET_NAMES[parser.parse_args().choose_test_data] # max 8
+    TEST_DATA = DATASET_NAMES[parser.parse_args().testDatasetID] # max 8
     test_inf = dataset_info(TEST_DATA, is_linux=IS_LINUX)
     test_dir = test_inf['data_dir']
     is_testing =False
 
     # Training settings
     # BIPED-B2=1, BIPDE-B3=2, just for evaluation, using LDC trained with 2 or 3 bloacks
-    TRAIN_DATA = DATASET_NAMES[0] # BIPED=0, BRIND=6, MDBD=10
+    #TRAIN_DATA = DATASET_NAMES[parser.parse_args().trainDatasetID] # max 8
+    TRAIN_DATA = DATASET_NAMES[6] # BIPED=0, BRIND=6, MDBD=10
     train_inf = dataset_info(TRAIN_DATA, is_linux=IS_LINUX)
     train_dir = train_inf['data_dir']
 

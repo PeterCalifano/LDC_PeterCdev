@@ -35,7 +35,7 @@ def dataset_info(dataset_name, is_linux=True):
             'BIPBRI': {
                 'img_height': 512,  # 321
                 'img_width': 512,  # 481
-                'train_list': 'train_pair0.lst',
+                'train_list': 'train_rgb.lst',
                 'train_list2': 'train_pair.lst',
                 'test_list': None,
                 'data_dir': '/home/peterc/devDir/MachineLearning_PeterCdev/datasets/BIPED',  # mean_rgb
