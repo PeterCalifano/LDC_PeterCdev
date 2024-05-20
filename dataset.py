@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 import json
 
 DATASET_NAMES = [
-    'BIPED',
+    'BIPED', 
     'BIPED-B2',
     'BIPED-B3',
     'BIPED-B5',
@@ -38,8 +38,8 @@ def dataset_info(dataset_name, is_linux=True):
                 'train_list': 'train_pair0.lst',
                 'train_list2': 'train_pair.lst',
                 'test_list': None,
-                'data_dir': '/root/workspace/datasets/BIPED',  # mean_rgb
-                'data_dir2': '/root/workspace/datasets/BRIND',  # mean_rgb
+                'data_dir': '/home/peterc/devDir/MachineLearning_PeterCdev/datasets/BIPED',  # mean_rgb
+                'data_dir2': '/home/peterc/devDir/MachineLearning_PeterCdev/datasets/BRIND',  # mean_rgb
                 'yita': 0.5,
                 'mean': BIPED_mean
             },
@@ -60,7 +60,7 @@ def dataset_info(dataset_name, is_linux=True):
             'data_dir': '/root/workspace/datasets/ICEDA',  # mean_rgb
             'yita': 0.5,
             'mean': [104.007, 116.669, 122.679, 137.86]
-        },
+            },
             'BSDS': {
                 'img_height': 512, #321
                 'img_width': 512, #481
@@ -74,7 +74,7 @@ def dataset_info(dataset_name, is_linux=True):
                 'img_width': 512,  # 481
                 'train_list': 'train_pair2.lst',
                 'test_list': 'test_pair.lst',
-                'data_dir': '/opt/dataset/BRIND',  # mean_rgb
+                'data_dir': '/home/peterc/devDir/MachineLearning_PeterCdev/datasets/BRIND',  # mean_rgb
                 'yita': 0.5
             },
             'BSDS300': {
@@ -98,7 +98,7 @@ def dataset_info(dataset_name, is_linux=True):
                 'img_width': 512,
                 'test_list': 'test_pair.lst',
                 'train_list': None,
-                'data_dir': '/opt/dataset/CID',  # mean_rgb
+                'data_dir': 'path/to/CID',  # mean_rgb
                 'yita': 0.3
             },
             'NYUD': {
@@ -106,7 +106,7 @@ def dataset_info(dataset_name, is_linux=True):
                 'img_width': 560,#560
                 'test_list': 'test_pair.lst',
                 'train_list': None,
-                'data_dir': '/opt/dataset/NYUD',  # mean_rgb
+                'data_dir': 'path/to/NYUD',  # mean_rgb
                 'yita': 0.5
             },
             'MDBD': {
@@ -114,7 +114,7 @@ def dataset_info(dataset_name, is_linux=True):
                 'img_width': 1280,
                 'test_list': 'test_pair.lst',
                 'train_list': 'train_pair.lst',
-                'data_dir': '/opt/dataset/MDBD',  # mean_rgb
+                'data_dir': 'path/to/MDBD',  # mean_rgb
                 'yita': 0.3
             },
             'BIPED': {
@@ -122,7 +122,7 @@ def dataset_info(dataset_name, is_linux=True):
                 'img_width': 1280, # 1280 5 1920
                 'test_list': 'test_pair.lst',
                 'train_list': 'train_rgb.lst',
-                'data_dir': '/opt/dataset/BIPED',  # mean_rgb
+                'data_dir': '/home/peterc/devDir/MachineLearning_PeterCdev/datasets/BIPED',  # mean_rgb
                 'yita': 0.5
             },
             'CLASSIC': {
