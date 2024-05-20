@@ -391,11 +391,26 @@ def main(args):
     # Instantiate model and move it to the computing device
     model = LDC().to(device)
     # model = nn.DataParallel(model)
+    
     ini_epoch =0
+
+    print('Using training dataset in input directory: ', args.input_dir)
+    print('Using validation dataset in input directory: ', args.input_val_dir)
+    if not(args.is_testing):
+        if not(args.resume):
+            print('Training from --> to epoch numbers: ', ini_epoch, "-->", args.epochs)
+        else:
+            print('Resuming training from previous state up to epoch numbers: ', args.epochs)
+    else:
+        print('Entering TESTING mode using model in checkpoint path: ', checkpoint_path)
+    input("-- PRESS ENTER TO START --")
+
+    
     if not args.is_testing:
         if args.resume:
             checkpoint_path2= os.path.join(args.output_dir, 'BIPED-54-B4',args.checkpoint_data)
-            ini_epoch=8
+            ini_epoch=20 # TODO: MODIFY TO SELECT LATEST CHECKPOINT FROM TRAINING
+            print("Loaded checkpoint at epoch number: ", ini_epoch)
             model.load_state_dict(torch.load(checkpoint_path2,
                                          map_location=device))
         dataset_train = BipedDataset(args.input_dir,
