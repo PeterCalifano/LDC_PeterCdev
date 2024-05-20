@@ -213,6 +213,10 @@ def testPich(checkpoint_path, dataloader, model, device, output_dir, args):
     print("Time spend in the Dataset: %f.4" % total_duration.sum(), "seconds")
 
 
+# Function to get last checkpoint saved in selected checkpoint directory: TODO
+#def getLastCheckpoint():
+    
+
 def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='LDC trainer.')
@@ -222,7 +226,21 @@ def parse_args():
                         help='Choose a dataset for testing: 0 - 8')
     # ----------- test -------0--
 
-
+    parser.add_argument('--resume',
+                        type=bool,
+                        default=False,
+                        help='use previous trained data')  
+    
+    parser.add_argument('--output_dir',
+                        type=str,
+                        default='checkpoints',
+                        help='the path to output the results.')
+    
+    parser.add_argument('--checkpoint_data',
+                        type=str,
+                        default='16/16_model.pth',# 37 for biped 60 MDBD
+                        help='Checkpoint path.')
+    
     TEST_DATA = DATASET_NAMES[parser.parse_args().choose_test_data] # max 8
     test_inf = dataset_info(TEST_DATA, is_linux=IS_LINUX)
     test_dir = test_inf['data_dir']
@@ -243,10 +261,6 @@ def parse_args():
                         type=str,
                         default=test_inf['data_dir'],
                         help='the path to the directory with the input data for validation.')
-    parser.add_argument('--output_dir',
-                        type=str,
-                        default='checkpoints',
-                        help='the path to output the results.')
     parser.add_argument('--train_data',
                         type=str,
                         choices=DATASET_NAMES,
@@ -276,14 +290,7 @@ def parse_args():
                         type=bool,
                         default=False,
                         help='True: use same 2 imgs changing channels')  # Just for test
-    parser.add_argument('--resume',
-                        type=bool,
-                        default=False,
-                        help='use previous trained data')  # Just for test
-    parser.add_argument('--checkpoint_data',
-                        type=str,
-                        default='16/16_model.pth',# 37 for biped 60 MDBD
-                        help='Checkpoint path.')
+
     parser.add_argument('--test_img_width',
                         type=int,
                         default=test_inf['img_width'],
@@ -370,6 +377,8 @@ def main(args):
     training_dir = os.path.join(args.output_dir,args.train_data)
     os.makedirs(training_dir,exist_ok=True)
     checkpoint_path = os.path.join(args.output_dir, args.train_data,args.checkpoint_data)
+
+    # TENSORBOARD CODE
     if args.tensorboard and not args.is_testing:
         # from tensorboardX import SummaryWriter  # previous torch version
         from torch.utils.tensorboard import SummaryWriter # for torch 1.4 or greather
@@ -399,20 +408,27 @@ def main(args):
     if not(args.is_testing):
         if not(args.resume):
             print('Training from --> to epoch numbers: ', ini_epoch, "-->", args.epochs)
+            input("-- PRESS ENTER TO START TRAINING FROM SCRATCH--")
         else:
             print('Resuming training from previous state up to epoch numbers: ', args.epochs)
     else:
         print('Entering TESTING mode using model in checkpoint path: ', checkpoint_path)
-    input("-- PRESS ENTER TO START --")
+
 
     
     if not args.is_testing:
         if args.resume:
-            checkpoint_path2= os.path.join(args.output_dir, 'BIPED-54-B4',args.checkpoint_data)
+            checkpoint_path2= os.path.join(args.output_dir, 'BIPED',args.checkpoint_data) # MANUAL HARDCODED INPUT REQUIRED HERE
+            print('Loading checkpoint from: ', checkpoint_path2)
+            if not os.path.exists(checkpoint_path2):
+                raise ValueError("Selected checkpoint path NOT FOUND: EXITING...")
+
             ini_epoch=20 # TODO: MODIFY TO SELECT LATEST CHECKPOINT FROM TRAINING
-            print("Loaded checkpoint at epoch number: ", ini_epoch)
             model.load_state_dict(torch.load(checkpoint_path2,
                                          map_location=device))
+            print("Loaded checkpoint at epoch number: ", ini_epoch)
+            input("-- PRESS ENTER TO START TRAINING FROM CHECKPOINT--")
+
         dataset_train = BipedDataset(args.input_dir,
                                      img_width=args.img_width,
                                      img_height=args.img_height,
@@ -426,6 +442,7 @@ def main(args):
                                       shuffle=True,
                                       num_workers=args.workers)
 
+        
     dataset_val = TestDataset(args.input_val_dir,
                               test_data=args.test_data,
                               img_width=args.test_img_width,
@@ -438,11 +455,14 @@ def main(args):
                                 batch_size=1,
                                 shuffle=False,
                                 num_workers=args.workers)
+    
     # Testing
     if args.is_testing:
 
         output_dir = os.path.join(args.res_dir, args.train_data+"2"+ args.test_data)
         print(f"output_dir: {output_dir}")
+        input("-- PRESS ENTER TO START TEST--")
+
         if args.double_img:
             # run twice the same image changing the image's channels
             testPich(checkpoint_path, dataloader_val, model, device, output_dir, args)
