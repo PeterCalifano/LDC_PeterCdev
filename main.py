@@ -246,6 +246,17 @@ def parse_args():
                         default='16/16_model.pth',# 37 for biped 60 MDBD
                         help='Checkpoint path.')
     
+    parser.add_argument('--initial_epoch',
+                        type=str,
+                        default=0,# 37 for biped 60 MDBD
+                        help='Initial epoch from which training is resumed')
+    
+    parser.add_argument('--epochs',
+                        type=int,
+                        default=25,
+                        metavar='N',
+                        help='Number of training epochs (default: 25).')
+    
     TEST_DATA = DATASET_NAMES[parser.parse_args().testDatasetID] # max 8
     test_inf = dataset_info(TEST_DATA, is_linux=IS_LINUX)
     test_dir = test_inf['data_dir']
@@ -313,12 +324,6 @@ def parse_args():
                         type=int,
                         default=100,
                         help='The NO B to wait before printing test predictions. 200')
-
-    parser.add_argument('--epochs',
-                        type=int,
-                        default=25,
-                        metavar='N',
-                        help='Number of training epochs (default: 25).')
     parser.add_argument('--lr', default=5e-5, type=float,
                         help='Initial learning rate. =5e-5')
     parser.add_argument('--lrs', default=[25e-4,5e-4,1e-5], type=float,
@@ -407,7 +412,8 @@ def main(args):
     model = LDC().to(device)
     # model = nn.DataParallel(model)
     
-    ini_epoch =0
+    
+    ini_epoch=0
 
     print('Using training dataset in input directory: ', args.input_dir)
     print('Using validation dataset in input directory: ', args.input_val_dir)
@@ -429,7 +435,9 @@ def main(args):
             if not os.path.exists(checkpoint_path2):
                 raise ValueError("Selected checkpoint path NOT FOUND: EXITING...")
 
-            ini_epoch=20 # TODO: MODIFY TO SELECT LATEST CHECKPOINT FROM TRAINING
+            #ini_epoch=0 # TODO: MODIFY TO SELECT LATEST CHECKPOINT FROM TRAINING
+            ini_epoch=int(args.initial_epoch)
+
             model.load_state_dict(torch.load(checkpoint_path2,
                                          map_location=device))
             print("Loaded checkpoint at epoch number: ", ini_epoch)
