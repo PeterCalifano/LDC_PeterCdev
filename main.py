@@ -247,7 +247,7 @@ def parse_args():
                         help='Checkpoint path.')
     
     parser.add_argument('--initial_epoch',
-                        type=str,
+                        type=int,
                         default=0,# 37 for biped 60 MDBD
                         help='Initial epoch from which training is resumed')
     
@@ -256,6 +256,9 @@ def parse_args():
                         default=25,
                         metavar='N',
                         help='Number of training epochs (default: 25).')
+    
+    parser.add_argument('--lr', default=5e-5, type=float,
+                        help='Initial learning rate. =5e-5')
     
     TEST_DATA = DATASET_NAMES[parser.parse_args().testDatasetID] # max 8
     test_inf = dataset_info(TEST_DATA, is_linux=IS_LINUX)
@@ -324,8 +327,6 @@ def parse_args():
                         type=int,
                         default=100,
                         help='The NO B to wait before printing test predictions. 200')
-    parser.add_argument('--lr', default=5e-5, type=float,
-                        help='Initial learning rate. =5e-5')
     parser.add_argument('--lrs', default=[25e-4,5e-4,1e-5], type=float,
                         help='LR for set epochs')
     parser.add_argument('--wd', type=float, default=0., metavar='WD',
@@ -430,7 +431,7 @@ def main(args):
     
     if not args.is_testing:
         if args.resume:
-            checkpoint_path2= os.path.join(args.output_dir, 'BIPED',args.checkpoint_data) # MANUAL HARDCODED INPUT REQUIRED HERE
+            checkpoint_path2= os.path.join(args.output_dir ,args.checkpoint_data) # MANUAL HARDCODED INPUT REQUIRED HERE
             print('Loading checkpoint from: ', checkpoint_path2)
             if not os.path.exists(checkpoint_path2):
                 raise ValueError("Selected checkpoint path NOT FOUND: EXITING...")
